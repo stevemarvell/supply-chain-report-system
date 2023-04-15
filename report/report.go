@@ -84,16 +84,14 @@ func ReGenerateReports(p *product.Product) ([]*Report, error) {
 	dirty[p.ID] = p
 	makeUsersDirty(p)
 
-	var reports []*Report
-
-	// Regenerate reports for all dirty products
+	// Generate reports for all dirty products
+	var dirtyProducts []*product.Product
 	for _, dirtyProduct := range dirty {
-		report, err := GenerateReport(dirtyProduct)
-		if err != nil {
-			return nil, fmt.Errorf("error generating report", err)
-		}
-
-		reports = append(reports, report)
+		dirtyProducts = append(dirtyProducts, dirtyProduct)
+	}
+	reports, err := GenerateReports(dirtyProducts)
+	if err != nil {
+		return nil, fmt.Errorf("error generating reports: %v", err)
 	}
 
 	return reports, nil
