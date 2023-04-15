@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"supply-chain-report-system/product"
+	"sync"
 )
 
 type Report struct {
@@ -35,6 +36,33 @@ func GenerateReport(p *product.Product) (*Report, error) {
 		Product:     p,
 		ReportLines: lines,
 	}, nil
+}
+
+func GenerateReports(products []*product.Product) ([]*Report, error) {
+	type result struct {
+		report *Report
+		err    error
+	}
+	results := make(chan result, len(products))
+	wg := sync.WaitGroup{}
+	for _, p := range products {
+		wg.Add(1)
+		go func(p *product.Product) {
+			defer wg.Done()
+			r, err := GenerateReport(p)
+			results <- result{r, err}
+		}(p)
+	}
+	wg.Wait()
+	close(results)
+	var reports []*Report
+	for res := range results {
+		if res.err != nil {
+			return nil, fmt.Errorf("error generating report: %v", res.err)
+		}
+		reports = append(reports, res.report)
+	}
+	return reports, nil
 }
 
 func ReGenerateReports(p *product.Product) ([]*Report, error) {

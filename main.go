@@ -6,6 +6,14 @@ import (
 	"supply-chain-report-system/report"
 )
 
+func printReports(reports []*report.Report) {
+	fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++")
+	for _, r := range reports {
+		fmt.Println("----------------------")
+		fmt.Println(r)
+	}
+}
+
 func main() {
 	// Create some test products and components
 	p1, _ := product.NewProduct(1, "Product 1", 10, nil)
@@ -18,26 +26,19 @@ func main() {
 	p2.AddComponent(p3, 1)
 
 	products := []*product.Product{p1, p2, p3}
-
-	for _, p := range products {
-		r, err := report.GenerateReport(p)
-		if err != nil {
-			fmt.Println("Error generating r:", err)
-			return
-		}
-
-		fmt.Println("----------------------")
-		fmt.Println(r)
+	reports, err := report.GenerateReports(products)
+	if err != nil {
+		fmt.Println("Error generating reports:", err)
 	}
 
-	fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++")
+	printReports(reports)
 
 	p2.UpdateManufacturingScore(15)
 
-	reports, _ := report.ReGenerateReports(p2)
-
-	for _, r := range reports {
-		fmt.Println("----------------------")
-		fmt.Println(r)
+	newReports, err := report.ReGenerateReports(p2)
+	if err != nil {
+		fmt.Println("Error generating reports:", err)
 	}
+
+	printReports(newReports)
 }
