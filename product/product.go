@@ -1,6 +1,9 @@
 package product
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type Product struct {
 	ID                 int
@@ -60,22 +63,73 @@ func (p *Product) RemoveComponent(c *Product) {
 	p.CalculateScore()
 }
 
-func (p *Product) CalculateScore() {
-	// Start with the manufacturing score
-	score := p.ManufacturingScore
+// TopologicalSort A function to perform a topological sort on a list of products
+func TopologicalSort(products []*Product) ([]*Product, error) {
+	sorted := make([]*Product, 0, len(products))
+	visited := make(map[int]bool)
+	var visit func(p *Product)
 
-	// Add the scores of each component, taking quantity into account
-	for _, c := range p.Components {
-		score += c.Product.Score * c.Quantity
+	visit = func(p *Product) {
+		visited[p.ID] = true
+		for _, usedBy := range p.UsedBy {
+			if !visited[usedBy.ID] {
+				visit(usedBy)
+			}
+		}
+		sorted = append(sorted, p)
 	}
 
-	// Only update the product score if it has changed
-	if p.Score != score {
-		p.Score = score
+	for _, p := range products {
+		if !visited[p.ID] {
+			visit(p)
+		}
+	}
 
-		// Update the scores of all products that use this product
-		for _, usedBy := range p.UsedBy {
-			usedBy.CalculateScore()
+	// Reverse the order of the sorted list
+	for i, j := 0, len(sorted)-1; i < j; i, j = i+1, j-1 {
+		sorted[i], sorted[j] = sorted[j], sorted[i]
+	}
+
+	return sorted, nil
+}
+
+func (p *Product) CalculateScore() {
+
+	dirty := make(map[int]*Product)
+
+	var makeUsersDirty func(q *Product)
+
+	makeUsersDirty = func(q *Product) {
+		for _, user := range q.UsedBy {
+			_, ok := dirty[user.ID]
+			if !ok {
+				dirty[user.ID] = user
+				makeUsersDirty(user)
+			}
+		}
+	}
+
+	// Mark all affected products as dirty
+	dirty[p.ID] = p
+	makeUsersDirty(p)
+	var products []*Product
+	for _, p := range dirty {
+		products = append(products, p)
+	}
+
+	// Sort the products in topological order
+	sortedProducts, err := TopologicalSort(products)
+
+	if err != nil {
+		log.Printf("error calculating product scores: %v", err)
+		return
+	}
+
+	// Calculate the scores of each product in the correct order
+	for _, product := range sortedProducts {
+		product.Score = product.ManufacturingScore
+		for _, c := range product.Components {
+			product.Score += c.Product.Score * c.Quantity
 		}
 	}
 }
