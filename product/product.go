@@ -5,13 +5,13 @@ import "fmt"
 type Product struct {
 	ID                 int
 	Name               string
-	ManufacturingScore float64
+	ManufacturingScore int
 	Components         map[int]*Component
-	Score              float64
+	Score              int
 	UsedBy             []*Product
 }
 
-func NewProduct(id int, name string, manufacturingScore float64, components map[*Product]int) (*Product, error) {
+func NewProduct(id int, name string, manufacturingScore int, components map[*Product]int) (*Product, error) {
 	if name == "" {
 		return nil, fmt.Errorf("product name cannot be empty")
 	}
@@ -35,7 +35,7 @@ func NewProduct(id int, name string, manufacturingScore float64, components map[
 	return p, nil
 }
 
-func (p *Product) UpdateManufacturingScore(manufacturingScore float64) {
+func (p *Product) UpdateManufacturingScore(manufacturingScore int) {
 	p.ManufacturingScore = manufacturingScore
 	p.CalculateScore()
 }
@@ -66,7 +66,7 @@ func (p *Product) CalculateScore() {
 
 	// Add the scores of each component, taking quantity into account
 	for _, c := range p.Components {
-		score += c.Product.Score * float64(c.Quantity)
+		score += c.Product.Score * int(c.Quantity)
 	}
 
 	// Only update the product score if it has changed

@@ -19,17 +19,17 @@ func GenerateReport(p *product.Product) (*Report, error) {
 	// Generate the report lines
 	lines := []string{
 		fmt.Sprintf("Product: %s", p.Name),
-		fmt.Sprintf("Manufacturing Score: %.2f", p.ManufacturingScore),
+		fmt.Sprintf("Manufacturing Score: %d", p.ManufacturingScore),
 		"",
-		"Score Breakdown:",
+		"Components:",
 	}
 	for _, c := range p.Components {
-		lines = append(lines, fmt.Sprintf("- %d x %s: %.2f",
+		lines = append(lines, fmt.Sprintf("- %d x %s: %d",
 			c.Quantity,
 			c.Product.Name,
-			c.Product.Score*float64(c.Quantity)))
+			c.Product.Score*int(c.Quantity)))
 	}
-	lines = append(lines, "", fmt.Sprintf("Total Score: %.2f", p.Score))
+	lines = append(lines, "", fmt.Sprintf("Total Score: %d", p.Score))
 
 	return &Report{
 		Product:     p,

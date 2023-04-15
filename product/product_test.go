@@ -7,9 +7,9 @@ import (
 
 func TestProduct_CalculateChainScore(t *testing.T) {
 	// Create some test products and components
-	p1, _ := product.NewProduct(1, "Product 1", 10.0, nil)
-	p2, _ := product.NewProduct(2, "Product 2", 5.0, nil)
-	p3, _ := product.NewProduct(3, "Product 3", 20.0, nil)
+	p1, _ := product.NewProduct(1, "Product 1", 10, nil)
+	p2, _ := product.NewProduct(2, "Product 2", 5, nil)
+	p3, _ := product.NewProduct(3, "Product 3", 20, nil)
 
 	p1.AddComponent(p2, 2)
 	p1.AddComponent(p3, 1)
@@ -18,9 +18,9 @@ func TestProduct_CalculateChainScore(t *testing.T) {
 
 	// Test that the score is calculated correctly for all products in the chain
 
-	expectedScore3 := 20.0
-	expectedScore2 := 5.0 + (expectedScore3 * 3.0)
-	expectedScore1 := 10.0 + (expectedScore2 * 2.0) + (expectedScore3 * 1.0)
+	expectedScore3 := 20
+	expectedScore2 := 5 + (expectedScore3 * 3)
+	expectedScore1 := 10 + (expectedScore2 * 2) + (expectedScore3 * 1)
 
 	if p1.Score != expectedScore1 {
 		t.Errorf("%s score is incorrect: got %v, expected %v", p1.Name, p1.Score, expectedScore1)
@@ -34,11 +34,11 @@ func TestProduct_CalculateChainScore(t *testing.T) {
 
 	// Test a chain change (of which there would be many test)
 
-	p2.UpdateManufacturingScore(15.0)
+	p2.UpdateManufacturingScore(15)
 
-	expectedScore3 = 20.0
-	expectedScore2 = 15.0 + (expectedScore3 * 3.0)
-	expectedScore1 = 10.0 + (expectedScore2 * 2.0) + (expectedScore3 * 1.0)
+	expectedScore3 = 20
+	expectedScore2 = 15 + (expectedScore3 * 3)
+	expectedScore1 = 10 + (expectedScore2 * 2) + (expectedScore3 * 1)
 
 	if p1.Score != expectedScore1 {
 		t.Errorf("%s score is incorrect: got %v, expected %v", p1.Name, p1.Score, expectedScore1)
