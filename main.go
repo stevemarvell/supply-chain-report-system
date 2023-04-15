@@ -17,30 +17,27 @@ func main() {
 
 	p2.AddComponent(p3, 1)
 
-	// Generate a report for Product 3
-	fmt.Println("-----------------------------------------")
-	productReport3, err := report.GenerateReport(p3)
-	if err != nil {
-		fmt.Println("Error generating report:", err)
-		return
-	}
-	fmt.Println(productReport3)
+	products := []*product.Product{p1, p2, p3}
 
-	// Generate a report for Product 1
-	fmt.Println("-----------------------------------------")
-	productReport2, err := report.GenerateReport(p2)
-	if err != nil {
-		fmt.Println("Error generating report:", err)
-		return
-	}
-	fmt.Println(productReport2)
+	for _, p := range products {
+		r, err := report.GenerateReport(p)
+		if err != nil {
+			fmt.Println("Error generating r:", err)
+			return
+		}
 
-	// Generate a report for Product 1
-	fmt.Println("-----------------------------------------")
-	productReport1, err := report.GenerateReport(p1)
-	if err != nil {
-		fmt.Println("Error generating report:", err)
-		return
+		fmt.Println("----------------------")
+		fmt.Println(r)
 	}
-	fmt.Println(productReport1)
+
+	fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+	p2.UpdateManufacturingScore(15)
+
+	reports, _ := report.ReGenerateReports(p2)
+
+	for _, r := range reports {
+		fmt.Println("----------------------")
+		fmt.Println(r)
+	}
 }

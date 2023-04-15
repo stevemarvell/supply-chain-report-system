@@ -23,13 +23,13 @@ func TestProduct_CalculateChainScore(t *testing.T) {
 	expectedScore1 := 10 + (expectedScore2 * 2) + (expectedScore3 * 1)
 
 	if p1.Score != expectedScore1 {
-		t.Errorf("%s score is incorrect: got %v, expected %v", p1.Name, p1.Score, expectedScore1)
+		t.Errorf("%s score is incorrect: got %d, expected %d", p1.Name, p1.Score, expectedScore1)
 	}
 	if p2.Score != expectedScore2 {
-		t.Errorf("%s score is incorrect: got %v, expected %v", p2.Name, p2.Score, expectedScore2)
+		t.Errorf("%s score is incorrect: got %d, expected %d", p2.Name, p2.Score, expectedScore2)
 	}
 	if p3.Score != expectedScore3 {
-		t.Errorf("%s score is incorrect: got %v, expected %v", p3.Name, p3.Score, expectedScore3)
+		t.Errorf("%s score is incorrect: got %d, expected %d", p3.Name, p3.Score, expectedScore3)
 	}
 
 	// Test a chain change (of which there would be many test)
@@ -41,12 +41,12 @@ func TestProduct_CalculateChainScore(t *testing.T) {
 	expectedScore1 = 10 + (expectedScore2 * 2) + (expectedScore3 * 1)
 
 	if p1.Score != expectedScore1 {
-		t.Errorf("%s score is incorrect: got %v, expected %v", p1.Name, p1.Score, expectedScore1)
+		t.Errorf("%s score is incorrect: got %d, expected %d", p1.Name, p1.Score, expectedScore1)
 	}
 	if p2.Score != expectedScore2 {
-		t.Errorf("%s score is incorrect: got %v, expected %v", p2.Name, p2.Score, expectedScore2)
+		t.Errorf("%s score is incorrect: got %d, expected %d", p2.Name, p2.Score, expectedScore2)
 	}
 	if p3.Score != expectedScore3 {
-		t.Errorf("%s score is incorrect: got %v, expected %v", p3.Name, p3.Score, expectedScore3)
+		t.Errorf("%s score is incorrect: got %d, expected %d", p3.Name, p3.Score, expectedScore3)
 	}
 }

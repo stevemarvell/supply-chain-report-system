@@ -37,6 +37,40 @@ func GenerateReport(p *product.Product) (*Report, error) {
 	}, nil
 }
 
+func ReGenerateReports(p *product.Product) ([]*Report, error) {
+	dirty := make(map[int]*product.Product)
+
+	var makeUsersDirty func(q *product.Product)
+
+	makeUsersDirty = func(q *product.Product) {
+		for _, user := range q.UsedBy {
+			_, ok := dirty[user.ID]
+			if !ok {
+				dirty[user.ID] = user
+				makeUsersDirty(user)
+			}
+		}
+	}
+
+	// Mark all affected products as dirty
+	dirty[p.ID] = p
+	makeUsersDirty(p)
+
+	var reports []*Report
+
+	// Regenerate reports for all dirty products
+	for _, dirtyProduct := range dirty {
+		report, err := GenerateReport(dirtyProduct)
+		if err != nil {
+			return nil, fmt.Errorf("error generating report", err)
+		}
+
+		reports = append(reports, report)
+	}
+
+	return reports, nil
+}
+
 func (r *Report) String() string {
 	return strings.Join(r.ReportLines, "\n")
 }
