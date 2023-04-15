@@ -27,7 +27,7 @@ func GenerateReport(p *product.Product) (*Report, error) {
 		lines = append(lines, fmt.Sprintf("- %d x %s: %d",
 			c.Quantity,
 			c.Product.Name,
-			c.Product.Score*int(c.Quantity)))
+			c.Product.Score*c.Quantity))
 	}
 	lines = append(lines, "", fmt.Sprintf("Total Score: %d", p.Score))
 
