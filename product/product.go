@@ -66,7 +66,7 @@ func (p *Product) CalculateScore() {
 
 	// Add the scores of each component, taking quantity into account
 	for _, c := range p.Components {
-		score += c.Product.Score * int(c.Quantity)
+		score += c.Product.Score * c.Quantity
 	}
 
 	// Only update the product score if it has changed
